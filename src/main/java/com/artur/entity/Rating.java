@@ -12,29 +12,29 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-public class ArchiveRatings {
+public class Rating {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "course_id", table = "archive_ratings")
+    @JoinColumn(name = "course_id", table = "rating")
     private Course course;
 
     @ManyToOne
-    @JoinColumn(name = "student_id", table = "archive_ratings")
+    @JoinColumn(name = "student_id", table = "rating")
     private Student student;
 
     private Short rating;
 
     public void setStudent(Student student) {
         this.student = student;
-        this.student.getArchiveRatings().add(this);
+        this.student.getRatings().add(this);
     }
 
     public void setCourse(Course course) {
         this.course = course;
-        this.course.getArchiveRatings().add(this);
+        this.course.getRatings().add(this);
     }
 }

@@ -16,7 +16,7 @@ public class HibernateUtil {
         configuration.addAnnotatedClass(Student.class);
         configuration.addAnnotatedClass(Course.class);
         configuration.addAnnotatedClass(AboutCourse.class);
-        configuration.addAnnotatedClass(ArchiveRatings.class);
+        configuration.addAnnotatedClass(Rating.class);
         configuration.configure();
 
         return configuration.buildSessionFactory();

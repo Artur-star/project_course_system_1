@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "archiveRatings")
+@ToString(exclude = "ratings")
 @Builder
 @Entity
 public class Course {
@@ -27,5 +27,5 @@ public class Course {
 
     @Builder.Default
     @OneToMany(mappedBy = "course")
-    private List<ArchiveRatings> archiveRatings = new ArrayList<>();
+    private List<Rating> ratings = new ArrayList<>();
 }

@@ -1,10 +1,8 @@
 package com.artur.entity;
 
 import com.artur.util.HibernateUtil;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.*;
@@ -50,7 +48,7 @@ class CourseSystemTest {
     }
 
     @Test
-    void testSaveAndGetArchiveRatings() {
+    void testSaveAndGetRating() {
         try (var sessionFactory = HibernateUtil.buildSessionFactory()) {
             try (var session = sessionFactory.openSession()) {
                 session.beginTransaction();
@@ -58,21 +56,21 @@ class CourseSystemTest {
                 var teacher = buildTeacher();
                 var course = buildCourse();
                 var student = buildStudent();
-                var expectedArchiveRatings = buildArchiveRatings();
+                var expectedRating = buildRating();
                 teacher.setAboutCourse(aboutCourse);
                 aboutCourse.addAboutCourse(course);
-                expectedArchiveRatings.setStudent(student);
-                expectedArchiveRatings.setCourse(course);
+                expectedRating.setStudent(student);
+                expectedRating.setCourse(course);
                 session.save(teacher);
                 session.save(aboutCourse);
                 session.save(student);
                 session.save(course);
 
-                var idArchiveRatings = session.save(expectedArchiveRatings);
-                session.evict(expectedArchiveRatings);
-                var actualArchiveRatings = session.get(ArchiveRatings.class, idArchiveRatings);
+                var idRating = session.save(expectedRating);
+                session.evict(expectedRating);
+                var actualRating = session.get(Rating.class, idRating);
 
-                assertThat(actualArchiveRatings).isEqualTo(expectedArchiveRatings);
+                assertThat(actualRating).isEqualTo(expectedRating);
                 session.getTransaction().commit();
             }
         }
@@ -118,8 +116,8 @@ class CourseSystemTest {
         }
     }
 
-    private ArchiveRatings buildArchiveRatings() {
-        return ArchiveRatings.builder()
+    private Rating buildRating() {
+        return Rating.builder()
                 .rating((short) 5)
                 .build();
     }

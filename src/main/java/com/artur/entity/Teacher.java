@@ -3,8 +3,8 @@ package com.artur.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -21,11 +21,12 @@ public class Teacher {
     private PersonalInfo personalInfo;
     private String profession;
 
-    @OneToOne(mappedBy = "teacher")
-    private AboutCourse aboutCourse;
+    @Builder.Default
+    @OneToMany(mappedBy = "teacher")
+    private List<AboutCourse> aboutCourses = new ArrayList<>();
 
     public void setAboutCourse(AboutCourse aboutCourse) {
-        this.aboutCourse = aboutCourse;
+        aboutCourses.add(aboutCourse);
         aboutCourse.setTeacher(this);
     }
 }

@@ -3,7 +3,6 @@ package com.artur.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = "archiveRatings")
+@ToString(exclude = "ratings")
 @Entity
 public class Student {
     @Id
@@ -23,7 +22,7 @@ public class Student {
 
     @Builder.Default
     @OneToMany(mappedBy = "student")
-    private List<ArchiveRatings> archiveRatings = new ArrayList<>();
+    private List<Rating> ratings = new ArrayList<>();
 
 
 }
