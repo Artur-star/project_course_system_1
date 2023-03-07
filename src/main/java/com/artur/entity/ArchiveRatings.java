@@ -5,23 +5,36 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.io.Serial;
-import java.io.Serializable;
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table
-public class ArchiveRatings implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    private CompositeKey compositeKey;
+public class ArchiveRatings {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id", table = "archive_ratings")
+    private Course course;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id", table = "archive_ratings")
+    private Student student;
+
     private Short rating;
+
+    public void setStudent(Student student) {
+        this.student = student;
+        this.student.getArchiveRatings().add(this);
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+        this.course.getArchiveRatings().add(this);
+    }
 }

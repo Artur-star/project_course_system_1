@@ -10,20 +10,22 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @ToString(exclude = "archiveRatings")
+@Builder
 @Entity
-public class Student {
+public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    private PersonalInfo personalInfo;
+    @ManyToOne
+    @JoinColumn(name = "about_course_id")
+    private AboutCourse aboutCourse;
+
+    private LocalDate start;
+    private LocalDate finish;
 
     @Builder.Default
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "course")
     private List<ArchiveRatings> archiveRatings = new ArrayList<>();
-
-
 }

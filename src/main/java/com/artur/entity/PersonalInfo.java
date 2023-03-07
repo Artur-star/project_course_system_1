@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serial;
 import java.io.Serializable;
@@ -21,6 +22,7 @@ public class PersonalInfo {
     private String lastname;
     private String patronymic;
     private LocalDate birthdate;
+    @Column(unique = true)
     private String email;
 
 }

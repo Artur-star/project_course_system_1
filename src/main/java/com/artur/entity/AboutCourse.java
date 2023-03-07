@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,8 +20,19 @@ public class AboutCourse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer teacherId;
+    @OneToOne()
+    @JoinColumn(name = "teacher_id", table = "about_course")
+    private Teacher teacher;
     private String name;
     private Integer costInRubles;
     private Integer maxStudentsNumber;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "aboutCourse")
+    private List<Course> courses = new ArrayList<>();
+
+    void addAboutCourse(Course course) {
+        courses.add(course);
+        course.setAboutCourse(this);
+    }
 }
