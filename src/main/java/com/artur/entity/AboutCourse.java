@@ -31,7 +31,7 @@ public class AboutCourse {
     @OneToMany(mappedBy = "aboutCourse")
     private List<Course> courses = new ArrayList<>();
 
-    void addAboutCourse(Course course) {
+    public void addAboutCourse(Course course) {
         courses.add(course);
         course.setAboutCourse(this);
     }

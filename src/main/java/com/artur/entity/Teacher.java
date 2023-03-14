@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-@ToString(exclude = "aboutCourse")
+@ToString(exclude = "aboutCourses")
 @Builder
 @Entity
 public class Teacher {

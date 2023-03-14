@@ -1,6 +1,7 @@
 package com.artur.entity;
 
 import com.artur.util.HibernateUtil;
+import com.artur.util.UtilSave;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -14,8 +15,8 @@ class CourseSystemTest {
         try (var sessionFactory = HibernateUtil.buildSessionFactory();
              var session = sessionFactory.openSession()) {
             session.beginTransaction();
-            var aboutCourse = buildAboutCourse();
-            var expectedTeacher = buildTeacher();
+            var aboutCourse = UtilSave.buildAboutCourse();
+            var expectedTeacher = UtilSave.buildTeacher();
             expectedTeacher.setAboutCourse(aboutCourse);
             session.save(aboutCourse);
 
@@ -33,8 +34,8 @@ class CourseSystemTest {
         try (var sessionFactory = HibernateUtil.buildSessionFactory();
              var session = sessionFactory.openSession()) {
             session.beginTransaction();
-            var expectedAboutCourse = buildAboutCourse();
-            var teacher = buildTeacher();
+            var expectedAboutCourse = UtilSave.buildAboutCourse();
+            var teacher = UtilSave.buildTeacher();
             teacher.setAboutCourse(expectedAboutCourse);
             session.save(teacher);
 
@@ -52,11 +53,11 @@ class CourseSystemTest {
         try (var sessionFactory = HibernateUtil.buildSessionFactory()) {
             try (var session = sessionFactory.openSession()) {
                 session.beginTransaction();
-                var aboutCourse = buildAboutCourse();
-                var teacher = buildTeacher();
-                var course = buildCourse();
-                var student = buildStudent();
-                var expectedRating = buildRating();
+                var aboutCourse = UtilSave.buildAboutCourse();
+                var teacher = UtilSave.buildTeacher();
+                var course = UtilSave.buildCourse();
+                var student = UtilSave.buildStudent();
+                var expectedRating = UtilSave.buildRating();
                 teacher.setAboutCourse(aboutCourse);
                 aboutCourse.addAboutCourse(course);
                 expectedRating.setStudent(student);
@@ -81,7 +82,7 @@ class CourseSystemTest {
         try (var sessionFactory = HibernateUtil.buildSessionFactory()) {
             try (var session = sessionFactory.openSession()) {
                 session.beginTransaction();
-                var expectedStudent = buildStudent();
+                var expectedStudent = UtilSave.buildStudent();
 
                 var studentId = session.save(expectedStudent);
                 session.evict(expectedStudent);
@@ -98,9 +99,9 @@ class CourseSystemTest {
         try (var sessionFactory = HibernateUtil.buildSessionFactory()) {
             try (var session = sessionFactory.openSession()) {
                 session.beginTransaction();
-                var expectedCourse = buildCourse();
-                var aboutCourse = buildAboutCourse();
-                var teacher = buildTeacher();
+                var expectedCourse = UtilSave.buildCourse();
+                var aboutCourse = UtilSave.buildAboutCourse();
+                var teacher = UtilSave.buildTeacher();
                 teacher.setAboutCourse(aboutCourse);
                 aboutCourse.addAboutCourse(expectedCourse);
                 session.save(teacher);
@@ -114,51 +115,5 @@ class CourseSystemTest {
                 session.getTransaction().commit();
             }
         }
-    }
-
-    private Rating buildRating() {
-        return Rating.builder()
-                .rating((short) 5)
-                .build();
-    }
-
-    private AboutCourse buildAboutCourse() {
-        return AboutCourse.builder()
-                .name("Веб-разработчик")
-                .costInRubles(80000)
-                .maxStudentsNumber(5)
-                .build();
-    }
-
-    private Course buildCourse() {
-        return Course.builder()
-                .start(LocalDate.of(2022, 10, 10))
-                .finish(LocalDate.of(2023, 10, 10))
-                .build();
-    }
-
-    private Student buildStudent() {
-        return Student.builder()
-                .personalInfo(PersonalInfo.builder()
-                        .firstname("Антуан")
-                        .lastname("Гризман")
-                        .patronymic("Артурович")
-                        .email("antuan@gmail.com")
-                        .birthdate(LocalDate.of(1990, 9, 16))
-                        .build())
-                .build();
-    }
-
-    private Teacher buildTeacher() {
-        return Teacher.builder()
-                .personalInfo(PersonalInfo.builder()
-                        .firstname("Диего")
-                        .lastname("Симеоне")
-                        .patronymic("Гонсалес")
-                        .email("YEFA@gmail.com")
-                        .birthdate(LocalDate.of(1975, 9, 16))
-                        .build())
-                .profession("Веб-дизайнер")
-                .build();
     }
 }
