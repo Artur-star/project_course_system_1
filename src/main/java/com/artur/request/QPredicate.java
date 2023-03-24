@@ -1,4 +1,4 @@
-package com.artur.dao;
+package com.artur.request;
 
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;

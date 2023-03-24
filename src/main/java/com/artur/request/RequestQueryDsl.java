@@ -1,20 +1,13 @@
-package com.artur.dao;
+package com.artur.request;
 
-import com.artur.dto.AboutCourseFilter;
-import com.artur.dto.CourseFilter;
 import com.artur.dto.TeacherFilter;
 import com.artur.entity.*;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hibernate.Session;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static com.artur.entity.QAboutCourse.aboutCourse;
@@ -31,7 +24,7 @@ public class RequestQueryDsl {
         return INSTANCE;
     }
 
-    public List<Student> findAllStudentByCourseName(Session session, AboutCourseFilter filter) {
+    public List<Student> findAllStudentByCourseName(Session session, AboutCourse filter) {
         var predicate = QPredicate.builder()
                 .add(filter.getName(), s -> aboutCourse.name.eq(filter.getName()))
                 .buildAnd();

@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table
-public class AboutCourse {
+public class AboutCourse implements BaseEntity<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -28,7 +28,7 @@ public class AboutCourse {
     private Integer maxStudentsNumber;
 
     @Builder.Default
-    @OneToMany(mappedBy = "aboutCourse")
+    @OneToMany(mappedBy = "aboutCourse", cascade = CascadeType.REMOVE)
     private List<Course> courses = new ArrayList<>();
 
     public void addAboutCourse(Course course) {

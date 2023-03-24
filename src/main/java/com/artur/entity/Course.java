@@ -13,7 +13,7 @@ import java.util.List;
 @ToString(exclude = "ratings")
 @Builder
 @Entity
-public class Course {
+public class Course implements BaseEntity<Long>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,6 +26,6 @@ public class Course {
     private LocalDate finish;
 
     @Builder.Default
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE)
     private List<Rating> ratings = new ArrayList<>();
 }

@@ -1,12 +1,13 @@
-package com.artur.dao;
+package com.artur.request;
 
-import com.artur.dto.TeacherFilter;
 import com.artur.entity.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hibernate.Session;
 
-import javax.persistence.criteria.*;
+import javax.persistence.Tuple;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -30,10 +31,10 @@ public class RequestCriteriaAPI {
     }
 
     //максимальное количество студентов у преподавателя по имени и фамилии
-    public List<Object[]> findMaxCountStudentByFirstnameAndLastnameTeacher(Session session) {
+    public List<Tuple> findMaxCountStudentByFirstnameAndLastnameTeacher(Session session, String firstname, String lastname) {
         var cb = session.getCriteriaBuilder();
 
-        var criteria = cb.createQuery(Object[].class);
+        var criteria = cb.createQuery(Tuple.class);
 
         var student = criteria.from(Student.class);
         var rating = student.join(Student_.ratings);
@@ -41,11 +42,19 @@ public class RequestCriteriaAPI {
         var aboutCourse = course.join(Course_.aboutCourse);
         var teacher = aboutCourse.join(AboutCourse_.teacher);
 
-        criteria.multiselect(cb.count(student.get(Student_.id)),
-                teacher.get(Teacher_.personalInfo).get(PersonalInfo_.firstname),
-                teacher.get(Teacher_.personalInfo).get(PersonalInfo_.lastname))
-        .groupBy(teacher.get(Teacher_.id));
+        List<Predicate> predicates = new ArrayList<>();
+        if(firstname != null) {
+            predicates.add(cb.equal(teacher.get(Teacher_.personalInfo).get(PersonalInfo_.firstname), firstname));
+        } if(lastname != null) {
+            predicates.add(cb.equal(teacher.get(Teacher_.personalInfo).get(PersonalInfo_.lastname), lastname));
+        }
 
+        criteria.select(cb.tuple(
+                cb.count(student.get(Student_.id)),
+                teacher.get(Teacher_.personalInfo).get(PersonalInfo_.firstname),
+                teacher.get(Teacher_.personalInfo).get(PersonalInfo_.lastname))).where(
+                predicates.toArray(Predicate[]::new))
+                .groupBy(teacher.get(Teacher_.id));
 
         return session.createQuery(criteria)
                 .list();

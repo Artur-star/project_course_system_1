@@ -12,7 +12,7 @@ import java.util.List;
 @ToString(exclude = "aboutCourses")
 @Builder
 @Entity
-public class Teacher {
+public class Teacher implements BaseEntity<Integer>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
