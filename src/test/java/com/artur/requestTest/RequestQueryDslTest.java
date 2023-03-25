@@ -2,7 +2,6 @@ package com.artur.requestTest;
 
 import com.artur.dto.TeacherFilter;
 import com.artur.entity.Student;
-import com.artur.entity.Teacher;
 import com.artur.request.RequestQueryDsl;
 import com.artur.util.HibernateUtil;
 import com.artur.util.UtilDelete;
@@ -37,7 +36,7 @@ public class RequestQueryDslTest {
     void findAllStudentByCourseName() {
         @Cleanup var session = sessionFactory.openSession();
         session.beginTransaction();
-        var aboutCourse = UtilSave.getAboutCourse();
+        var aboutCourse = UtilSave.getAboutCourses().get(0);
 
         var students = queryDsl.findAllStudentByCourseName(session, aboutCourse);
         var actualResult = students.stream().map(Student::getId).collect(toList());
@@ -53,7 +52,7 @@ public class RequestQueryDslTest {
 
         var studentsCount = queryDsl.findCountStudentByTeacherNameAndSurname(session, TeacherFilter.builder().firstname("Gleb").lastname("Matveenka").build());
 
-        assertThat(studentsCount).isEqualTo(1L);
+        assertThat(studentsCount).isEqualTo(8L);
         session.getTransaction().commit();
     }
 
@@ -66,14 +65,14 @@ public class RequestQueryDslTest {
         var aboutCourses = tuples.stream()
                 .map(it -> it.get(0, String.class)).collect(toList());
 
-        assertThat(aboutCourses).contains("Веб-разработчик");
+        assertThat(aboutCourses).contains("Web-developer", "QA-developer", "Frontend-developer on Python");
 
         var avgAge = tuples.stream()
                 .map(it -> it.get(1, Double.class))
                 .map(a -> LocalDate.now().getYear() - a.intValue())
                 .collect(toList());
 
-        assertThat(avgAge).contains(33);
+        assertThat(avgAge).contains(37, 34, 26);
 
         session.getTransaction().commit();
     }

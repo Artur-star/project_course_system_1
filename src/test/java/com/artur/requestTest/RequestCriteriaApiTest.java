@@ -57,7 +57,7 @@ public class RequestCriteriaApiTest {
         var tuples = criteriaAPI.findMaxCountStudentByFirstnameAndLastnameTeacher(session, "Gleb", "Matveenka");
 
         var countStudent = tuples.stream().map(it -> it.get(0, Long.class)).collect(toList());
-        assertThat(countStudent).contains(1L);
+        assertThat(countStudent).contains(8L);
 
         var teacherFirstname = tuples.stream().map(it -> it.get(1, String.class)).collect(toList());
         assertThat(teacherFirstname).contains("Gleb");

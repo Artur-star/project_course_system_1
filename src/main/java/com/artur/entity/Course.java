@@ -26,6 +26,6 @@ public class Course implements BaseEntity<Long>{
     private LocalDate finish;
 
     @Builder.Default
-    @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Rating> ratings = new ArrayList<>();
 }

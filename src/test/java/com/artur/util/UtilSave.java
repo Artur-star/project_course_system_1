@@ -2,100 +2,132 @@ package com.artur.util;
 
 import com.artur.entity.*;
 import lombok.Cleanup;
+import lombok.Data;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.time.LocalDate.*;
 
 @UtilityClass
+@Data
 public class UtilSave {
-    private static Teacher teacher;
-    private static AboutCourse aboutCourse;
-    private static Student student;
-    private static Course course;
-    private static Rating rating;
+    private final List<Teacher> teachers = new ArrayList<>();
+    private final List<AboutCourse> aboutCourses = new ArrayList<>();
+    private final List<Course> courses = new ArrayList<>();
+    private final List<Student> students = new ArrayList<>();
+    private final List<Rating> ratings = new ArrayList<>();
 
     public void importData(SessionFactory sessionFactory) {
         @Cleanup var session = sessionFactory.openSession();
         session.beginTransaction();
 
-        teacher = saveTeacher(session, "Gleb", "Matveenka", "asd2@fer.com", "Веб-дизайнер");
-        var teacher1 = saveTeacher(session, "Vlad", "Vilnus", "dasdqw@fer.com", "QA-инженер");
-        var teacher2 = saveTeacher(session, "Ivan", "Ivanov", "asdaqw@fer.com", "Flutter-developer");
+        var webGlebMatveenka = saveTeacher(session, "Gleb", "Matveenka", "asd2@fer.com", "Веб-дизайнер");
+        var qaVladVilnus = saveTeacher(session, "Vlad", "Vilnus", "dasdqw@fer.com", "QA-инженер");
 
-        aboutCourse = saveAboutCourse(session, "Веб-разработчик");
-        var aboutCourse1 = saveAboutCourse(session, "QA-инженер");
-        var aboutCourse2 = saveAboutCourse(session, "Flutter-developer");
 
-        student = saveStudent(session, "Anton", "Gyev", "aaa@asd.ru");
-        var student1 = saveStudent(session, "Andrey", "Robich", "aaa1@asd.ru");
-        var student2 = saveStudent(session, "Alex", "Keln", "aaa2@asd.ru");
-        var student3 = saveStudent(session, "Alfred", "Gaag", "aaa3@asd.ru");
-        var student4 = saveStudent(session, "Albert", "Dobrev", "aaa4@asd.ru");
+        var webDev = saveAboutCourse(session, "Web-developer", webGlebMatveenka);
+        var frontendDev = saveAboutCourse(session, "Frontend-developer on Python", webGlebMatveenka);
+        var qaDev = saveAboutCourse(session, "QA-developer", qaVladVilnus);
 
-        course = saveCourse(session);
-        var course1 = saveCourse(session);
-        var course2 = saveCourse(session);
-        var course3 = saveCourse(session);
 
-        rating = saveRating(session);
-        var rating1 = saveRating(session);
-        var rating2 = saveRating(session);
-        var rating3 = saveRating(session);
-        var rating4 = saveRating(session);
-        var rating5 = saveRating(session);
 
-        UtilSave.relationshipBetweenEntity();
+        var course = saveCourse(session, of(2021, 2, 10), of(2022, 2, 10), webDev);
+        var course1 = saveCourse(session, of(2021, 5, 20), of(2022, 5, 20), webDev);
+        var course2 = saveCourse(session, of(2022, 3, 10), of(2023, 3, 10), frontendDev);
+        var course3 = saveCourse(session, of(2022, 6, 10), of(2023, 6, 10), qaDev);
+
+
+        var antonGyev = saveStudent(session, "Anton", "Gyev", "aaa@asd.ru", of(1974, 11, 11));
+        var andreyRobich = saveStudent(session, "Andrey", "Robich", "aaa1@asd.ru",  of(1984, 11, 11));
+        var alexKeln = saveStudent(session, "Alex", "Keln", "aaa2@asd.ru",  of(1994, 11, 11));
+        var alfredGaag = saveStudent(session, "Alfred", "Gaag", "aaa3@asd.ru",  of(1995, 11, 11));
+        var albertDobrev = saveStudent(session, "Albert", "Dobrev", "aaa4@asd.ru",  of(1999, 11, 11));
+
+
+        var rating = saveRating(session, course, antonGyev, (short) 5);
+        var rating1 = saveRating(session, course, andreyRobich, (short) 5);
+        var rating2 = saveRating(session, course, alexKeln, (short) 4);
+        var rating3 = saveRating(session, course1, albertDobrev, (short) 4);
+        var rating4 = saveRating(session, course1, antonGyev, (short) 5);
+        var rating5 = saveRating(session, course1, alexKeln, (short) 4);
+        var rating6 = saveRating(session, course2, alfredGaag, (short) 5);
+        var rating7 = saveRating(session, course2, albertDobrev, (short) 4);
+        var rating8 = saveRating(session, course3, andreyRobich, (short) 5);
+        var rating9 = saveRating(session, course3, alfredGaag, (short) 3);
+
+        teachers.add(webGlebMatveenka);
+        teachers.add(qaVladVilnus);
+
+        aboutCourses.add(webDev);
+        aboutCourses.add(frontendDev);
+        aboutCourses.add(qaDev);
+
+        courses.add(course);
+        courses.add(course1);
+        courses.add(course2);
+        courses.add(course3);
+
+        students.add(antonGyev);
+        students.add(andreyRobich);
+        students.add(alexKeln);
+        students.add(alfredGaag);
+        students.add(albertDobrev);
+
+        ratings.add(rating);
+        ratings.add(rating1);
+        ratings.add(rating2);
+        ratings.add(rating3);
+        ratings.add(rating4);
+        ratings.add(rating5);
+        ratings.add(rating6);
+        ratings.add(rating7);
+        ratings.add(rating8);
+        ratings.add(rating9);
 
         session.getTransaction().commit();
     }
 
-    public void relationshipBetweenEntity() {
-        teacher.setAboutCourse(aboutCourse);
-        aboutCourse.addAboutCourse(course);
-        rating.setStudent(student);
-        rating.setCourse(course);
-    }
-
     public Integer idTeacher() {
-        return teacher.getId();
+        return teachers.get(0).getId();
     }
 
     public Integer idAboutCourse() {
-        return aboutCourse.getId();
+        return aboutCourses.get(0).getId();
     }
 
     public Long idStudent() {
-        return student.getId();
+        return students.get(0).getId();
     }
 
     public Long idCourse() {
-        return student.getId();
+        return courses.get(0).getId();
     }
 
     public Long idRating() {
-        return rating.getId();
+        return ratings.get(0).getId();
     }
 
-    public static AboutCourse getAboutCourse() {
-        return aboutCourse;
-    }
-
-    public static Teacher getTeacher() {
-        return teacher;
-    }
-
-    private Rating saveRating(Session session) {
+    private Rating saveRating(Session session, Course course, Student student, Short estimate) {
         var rating = Rating.builder()
-                .rating((short) 5)
+                .course(course)
+                .student(student)
+                .rating(estimate)
                 .build();
         session.save(rating);
         return rating;
     }
 
-    private Course saveCourse(Session session) {
+    private Course saveCourse(Session session , LocalDate start, LocalDate finish, AboutCourse aboutCourse) {
         var course = Course.builder()
+                .aboutCourse(aboutCourse)
+                .start(start)
+                .finish(finish)
                 .build();
         session.save(course);
         return course;
@@ -108,7 +140,7 @@ public class UtilSave {
                         .lastname(lastname)
                         .patronymic("Гонсалес")
                         .email(email)
-                        .birthdate(LocalDate.of(1975, 9, 16))
+                        .birthdate(of(1975, 9, 16))
                         .build())
                 .profession(profession)
                 .build();
@@ -117,22 +149,23 @@ public class UtilSave {
         return teacher;
     }
 
-    private Student saveStudent(Session session, String firstname, String lastname, String email) {
+    private Student saveStudent(Session session, String firstname, String lastname, String email, LocalDate birthday) {
         var student = Student.builder()
                 .personalInfo(PersonalInfo.builder()
                         .firstname(firstname)
                         .lastname(lastname)
                         .patronymic("Артурович")
                         .email(email)
-                        .birthdate(LocalDate.of(1990, 9, 16))
+                        .birthdate(birthday)
                         .build())
                 .build();
         session.save(student);
         return student;
     }
 
-    private AboutCourse saveAboutCourse(Session session, String name) {
+    private AboutCourse saveAboutCourse(Session session, String name , Teacher teacher) {
         var aboutCourse = AboutCourse.builder()
+                .teacher(teacher)
                 .name(name)
                 .costInRubles(80000)
                 .maxStudentsNumber(5)
@@ -157,8 +190,8 @@ public class UtilSave {
 
     public Course buildCourse() {
         return Course.builder()
-                .start(LocalDate.of(2022, 10, 10))
-                .finish(LocalDate.of(2023, 10, 10))
+                .start(of(2022, 10, 10))
+                .finish(of(2023, 10, 10))
                 .build();
     }
 
@@ -169,7 +202,7 @@ public class UtilSave {
                         .lastname("Гризман")
                         .patronymic("Артурович")
                         .email("antuan@gmail.com")
-                        .birthdate(LocalDate.of(1990, 9, 16))
+                        .birthdate(of(1990, 9, 16))
                         .build())
                 .build();
     }
@@ -181,9 +214,13 @@ public class UtilSave {
                         .lastname("Симеоне")
                         .patronymic("Гонсалес")
                         .email("YEFA@gmail.com")
-                        .birthdate(LocalDate.of(1975, 9, 16))
+                        .birthdate(of(1975, 9, 16))
                         .build())
                 .profession("Веб-дизайнер")
                 .build();
-    };
+    }
+
+    public List<AboutCourse> getAboutCourses() {
+        return aboutCourses;
+    }
 }
