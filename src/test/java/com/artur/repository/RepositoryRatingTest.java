@@ -1,7 +1,7 @@
 package com.artur.repository;
 
+import com.artur.config.ApplicationConfigurationTest;
 import com.artur.entity.Rating;
-import com.artur.util.HibernateUtil;
 import com.artur.util.UtilDelete;
 import com.artur.util.UtilSave;
 import lombok.Cleanup;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RepositoryRatingTest {
-    SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();;
+    SessionFactory sessionFactory = new ApplicationConfigurationTest().buildSessionFactory();;
     RatingRepository ratingRepository;
 
     @BeforeEach

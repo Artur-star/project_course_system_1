@@ -8,17 +8,17 @@ import org.hibernate.cfg.Configuration;
 
 @UtilityClass
 public class HibernateUtil {
-    public static SessionFactory buildSessionFactory() {
-        var configuration = new Configuration();
-        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
-        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
-        configuration.addAnnotatedClass(Teacher.class);
-        configuration.addAnnotatedClass(Student.class);
-        configuration.addAnnotatedClass(Course.class);
-        configuration.addAnnotatedClass(AboutCourse.class);
-        configuration.addAnnotatedClass(Rating.class);
-        configuration.configure();
-
-        return configuration.buildSessionFactory();
-    }
+//    public static SessionFactory buildSessionFactory() {
+//        var configuration = new Configuration();
+//        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
+//        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
+//        configuration.addAnnotatedClass(Teacher.class);
+//        configuration.addAnnotatedClass(Student.class);
+//        configuration.addAnnotatedClass(Course.class);
+//        configuration.addAnnotatedClass(AboutCourse.class);
+//        configuration.addAnnotatedClass(Rating.class);
+//        configuration.configure();
+//
+//        return configuration.buildSessionFactory();
+//    }
 }

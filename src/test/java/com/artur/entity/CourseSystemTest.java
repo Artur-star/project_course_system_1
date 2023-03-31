@@ -1,17 +1,39 @@
 package com.artur.entity;
 
-import com.artur.util.HibernateUtil;
+import com.artur.config.ApplicationConfigurationTest;
+import com.artur.util.UtilDelete;
 import com.artur.util.UtilSave;
-import org.junit.jupiter.api.Test;
+import org.hibernate.SessionFactory;
+import org.junit.jupiter.api.*;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.assertj.core.api.Assertions.*;
 
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CourseSystemTest {
+
+    SessionFactory sessionFactory;
+
+    @BeforeAll
+    void createAppContext() {
+        var context = new AnnotationConfigApplicationContext(ApplicationConfigurationTest.class);
+        sessionFactory = context.getBean("buildSessionFactory", SessionFactory.class);
+    }
+
+    @BeforeEach
+    void createData() {
+        UtilSave.importData(sessionFactory);
+    }
+
+    @AfterEach
+    void deleteData() {
+        UtilDelete.deleteData(sessionFactory);
+    }
+
     @Test
     void testSaveAndGetTeacher() {
-        try (var sessionFactory = HibernateUtil.buildSessionFactory();
-             var session = sessionFactory.openSession()) {
+        try (var session = sessionFactory.openSession()) {
             session.beginTransaction();
             var aboutCourse = UtilSave.buildAboutCourse();
             var expectedTeacher = UtilSave.buildTeacher();
@@ -29,8 +51,7 @@ class CourseSystemTest {
 
     @Test
     void testSaveAndGetAboutCourse() {
-        try (var sessionFactory = HibernateUtil.buildSessionFactory();
-             var session = sessionFactory.openSession()) {
+        try (var session = sessionFactory.openSession()) {
             session.beginTransaction();
             var expectedAboutCourse = UtilSave.buildAboutCourse();
             var teacher = UtilSave.buildTeacher();
@@ -48,8 +69,7 @@ class CourseSystemTest {
 
     @Test
     void testSaveAndGetRating() {
-        try (var sessionFactory = HibernateUtil.buildSessionFactory()) {
-            try (var session = sessionFactory.openSession()) {
+        try (var session = sessionFactory.openSession()) {
                 session.beginTransaction();
                 var aboutCourse = UtilSave.buildAboutCourse();
                 var teacher = UtilSave.buildTeacher();
@@ -71,14 +91,12 @@ class CourseSystemTest {
 
                 assertThat(actualRating).isEqualTo(expectedRating);
                 session.getTransaction().commit();
-            }
         }
     }
 
     @Test
     void testSaveAndGetStudent() {
-        try (var sessionFactory = HibernateUtil.buildSessionFactory()) {
-            try (var session = sessionFactory.openSession()) {
+        try (var session = sessionFactory.openSession()) {
                 session.beginTransaction();
                 var expectedStudent = UtilSave.buildStudent();
 
@@ -88,14 +106,12 @@ class CourseSystemTest {
 
                 assertThat(actualStudent.getId()).isEqualTo(expectedStudent.getId());
                 session.getTransaction().commit();
-            }
         }
     }
 
     @Test
     void testSaveAndGetCourse() {
-        try (var sessionFactory = HibernateUtil.buildSessionFactory()) {
-            try (var session = sessionFactory.openSession()) {
+        try (var session = sessionFactory.openSession()) {
                 session.beginTransaction();
                 var expectedCourse = UtilSave.buildCourse();
                 var aboutCourse = UtilSave.buildAboutCourse();
@@ -111,7 +127,6 @@ class CourseSystemTest {
 
                 assertThat(actualCourse.getId()).isEqualTo(expectedCourse.getId());
                 session.getTransaction().commit();
-            }
         }
     }
 }

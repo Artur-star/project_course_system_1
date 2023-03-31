@@ -1,21 +1,33 @@
 package com.artur.repository;
 
+import com.artur.config.ApplicationConfigurationTest;
 import com.artur.entity.AboutCourse;
-import com.artur.util.HibernateUtil;
 import com.artur.util.UtilDelete;
 import com.artur.util.UtilSave;
 import lombok.Cleanup;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.*;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RepositoryAboutCourseTest {
-    SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();;
-    AboutCourseRepository aboutCourseRepository;
+
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfigurationTest.class);
+    SessionFactory sessionFactory;
+    Session session;
+    AboutCourseRepository aboutCourseRepository = context.getBean("aboutCourseRepository", AboutCourseRepository.class);
+
+    @BeforeAll
+    void startAll(){
+        sessionFactory = context.getBean("buildSessionFactory", SessionFactory.class);
+    }
 
     @BeforeEach
     void startEach() {
+        session = context.getBean(Session.class);
         UtilSave.importData(sessionFactory);
     }
 
@@ -24,9 +36,13 @@ public class RepositoryAboutCourseTest {
         UtilDelete.deleteData(sessionFactory);
     }
 
+    @AfterAll
+    void endAll() {
+        sessionFactory.close();
+    }
     @Test
     void findAllAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
+
         session.beginTransaction();
 
         aboutCourseRepository = new AboutCourseRepository(session);
@@ -44,7 +60,6 @@ public class RepositoryAboutCourseTest {
 
     @Test
     void findByIdAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
         session.beginTransaction();
 
         aboutCourseRepository = new AboutCourseRepository(session);
@@ -58,7 +73,6 @@ public class RepositoryAboutCourseTest {
 
     @Test
     void deleteAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
         session.beginTransaction();
 
         aboutCourseRepository = new AboutCourseRepository(session);
@@ -74,7 +88,6 @@ public class RepositoryAboutCourseTest {
 
     @Test
     void saveAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
         session.beginTransaction();
 
         aboutCourseRepository = new AboutCourseRepository(session);
@@ -93,7 +106,6 @@ public class RepositoryAboutCourseTest {
 
     @Test
     void updateAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
         session.beginTransaction();
 
         aboutCourseRepository = new AboutCourseRepository(session);
