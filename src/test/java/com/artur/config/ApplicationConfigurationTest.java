@@ -8,8 +8,8 @@ import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.*;
-import org.testcontainers.containers.PostgreSQLContainer;
 
+import javax.persistence.EntityManager;
 import java.lang.reflect.Proxy;
 
 @Configuration
@@ -41,15 +41,17 @@ public class ApplicationConfigurationTest {
     @Value("${hibernate.hbm2ddl.auto}")
     private String hibernateHbm2ddlAuto;
 
+    @Value("${hibernate.current_session_context_class}")
+    private String thread;
+
     @Bean
-    public Session session() {
-        return (Session) Proxy.newProxyInstance(Session.class.getClassLoader(), new Class[]{Session.class},
-                (proxy, method, args) -> method.invoke(buildSessionFactory().openSession(), args));
+    public EntityManager entityManager(SessionFactory sessionFactory) {
+        return (EntityManager) Proxy.newProxyInstance(EntityManager.class.getClassLoader(), new Class[]{EntityManager.class},
+                (proxy, method, args) -> method.invoke(sessionFactory.getCurrentSession(), args));
     }
 
     @Bean
-    @Scope(scopeName = BeanDefinition.SCOPE_SINGLETON)
-    public SessionFactory buildSessionFactory() {
+    public SessionFactory sessionFactory() {
         var configuration = new org.hibernate.cfg.Configuration();
         configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
         configuration.setProperty(Environment.URL, connectionUrl);
@@ -60,12 +62,12 @@ public class ApplicationConfigurationTest {
         configuration.setProperty(Environment.SHOW_SQL, showSql);
         configuration.setProperty(Environment.FORMAT_SQL, formatSql);
         configuration.setProperty(Environment.HBM2DDL_AUTO, hibernateHbm2ddlAuto);
+        configuration.setProperty(Environment.CURRENT_SESSION_CONTEXT_CLASS, thread);
         configuration.addAnnotatedClass(Teacher.class);
         configuration.addAnnotatedClass(Student.class);
         configuration.addAnnotatedClass(Course.class);
         configuration.addAnnotatedClass(AboutCourse.class);
         configuration.addAnnotatedClass(Rating.class);
-        configuration.configure();
 
         return configuration.buildSessionFactory();
     }

@@ -2,106 +2,113 @@ package com.artur.repository;
 
 import com.artur.config.ApplicationConfigurationTest;
 import com.artur.entity.Course;
+import com.artur.util.HibernateTestUtil;
 import com.artur.util.UtilDelete;
 import com.artur.util.UtilSave;
 import lombok.Cleanup;
 import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RepositoryCourseTest {
-    SessionFactory sessionFactory = new ApplicationConfigurationTest().buildSessionFactory();;
+    AnnotationConfigApplicationContext context;
+    SessionFactory sessionFactory;
+    EntityManager entityManager;
     CourseRepository courseRepository;
 
-    @BeforeEach
-    void startEach() {
-        UtilSave.importData(sessionFactory);
-    }
 
-    @AfterEach
-    void endEach() {
-        UtilDelete.deleteData(sessionFactory);
+    @BeforeAll
+    void startAll() {
+        context = new AnnotationConfigApplicationContext(ApplicationConfigurationTest.class);
+        sessionFactory = context.getBean("sessionFactory", SessionFactory.class);
+        entityManager = context.getBean("entityManager", EntityManager.class);
     }
 
     @Test
-    void findAllAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
-        session.beginTransaction();
+    void findAllCourseRepositoryTest() {
+        entityManager.getTransaction().begin();
+        UtilDelete.deleteData(sessionFactory);
+        UtilSave.importData(sessionFactory);
 
-        courseRepository = new CourseRepository(session);
+        courseRepository = new CourseRepository(entityManager);
 
         var actualList = courseRepository.findAll();
 
         assertThat(actualList).hasSize(4);
-        var expectedEntity1 = session.get(Course.class, 1L);
-        var expectedEntity2 = session.get(Course.class, 2L);
-        var expectedEntity3 = session.get(Course.class, 3L);
-        var expectedEntity4 = session.get(Course.class, 4L);
+        var expectedEntity1 = entityManager.find(Course.class, 1L);
+        var expectedEntity2 = entityManager.find(Course.class, 2L);
+        var expectedEntity3 = entityManager.find(Course.class, 3L);
+        var expectedEntity4 = entityManager.find(Course.class, 4L);
         assertThat(actualList).contains(expectedEntity1, expectedEntity2, expectedEntity3, expectedEntity4);
 
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
     }
 
     @Test
-    void findByIdAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
-        session.beginTransaction();
+    void findByIdCourseRepositoryTest() {
+        entityManager.getTransaction().begin();
+        UtilDelete.deleteData(sessionFactory);
+        UtilSave.importData(sessionFactory);
 
-        courseRepository = new CourseRepository(session);
+        courseRepository = new CourseRepository(entityManager);
 
         var actualAboutCourse = courseRepository.findById(UtilSave.idCourse()).orElse(null);
 
         assertThat(actualAboutCourse).isNotNull();
 
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
     }
 
     @Test
-    void deleteAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
-        session.beginTransaction();
+    void deleteCourseRepositoryTest() {
+        entityManager.getTransaction().begin();
+        UtilDelete.deleteData(sessionFactory);
+        UtilSave.importData(sessionFactory);
 
-        courseRepository = new CourseRepository(session);
-        var course = session.get(Course.class, UtilSave.idCourse());
+        courseRepository = new CourseRepository(entityManager);
+        var course = entityManager.find(Course.class, UtilSave.idCourse());
 
         courseRepository.delete(course);
 
         var list = courseRepository.findAll();
         assertThat(list).hasSize(3);
 
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
     }
 
     @Test
-    void saveAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
-        session.beginTransaction();
+    void saveCourseRepositoryTest() {
+        entityManager.getTransaction().begin();
+        UtilDelete.deleteData(sessionFactory);
+        UtilSave.importData(sessionFactory);
 
-        courseRepository = new CourseRepository(session);
+        courseRepository = new CourseRepository(entityManager);
         var course = UtilSave.buildCourse();
 
         var actualEntity = courseRepository.save(course);
-        session.evict(actualEntity);
+        entityManager.detach(actualEntity);
 
         var list = courseRepository.findAll();
-        var expectedEntity = session.get(Course.class, UtilSave.idCourse());
+        var expectedEntity = entityManager.find(Course.class, UtilSave.idCourse());
         assertThat(list).hasSize(5);
         assertThat(list).contains(expectedEntity);
 
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
     }
 
     @Test
-    void updateAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
-        session.beginTransaction();
+    void updateCourseRepositoryTest() {
+        entityManager.getTransaction().begin();
+        UtilDelete.deleteData(sessionFactory);
+        UtilSave.importData(sessionFactory);
 
-        courseRepository = new CourseRepository(session);
+        courseRepository = new CourseRepository(entityManager);
         var expectedCourse = Course.builder()
                 .id(UtilSave.idCourse())
                 .start(LocalDate.of(2020, 10, 1))
@@ -110,9 +117,9 @@ public class RepositoryCourseTest {
 
         courseRepository.update(expectedCourse);
 
-        var actualCourse = session.get(Course.class, UtilSave.idCourse());
+        var actualCourse = entityManager.find(Course.class, UtilSave.idCourse());
         assertThat(actualCourse.toString()).isEqualTo(expectedCourse.toString());
 
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
     }
 }

@@ -3,103 +3,110 @@ package com.artur.repository;
 import com.artur.config.ApplicationConfigurationTest;
 import com.artur.entity.PersonalInfo;
 import com.artur.entity.Teacher;
+import com.artur.util.HibernateTestUtil;
 import com.artur.util.UtilDelete;
 import com.artur.util.UtilSave;
 import lombok.Cleanup;
 import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RepositoryTeacherTest {
-    SessionFactory sessionFactory = new ApplicationConfigurationTest().buildSessionFactory();;
+
+    AnnotationConfigApplicationContext context;
+    SessionFactory sessionFactory;
+    EntityManager entityManager;
     TeacherRepository teacherRepository;
 
-    @BeforeEach
-    void startEach() {
-        UtilSave.importData(sessionFactory);
-    }
 
-    @AfterEach
-    void endEach() {
-        UtilDelete.deleteData(sessionFactory);
+    @BeforeAll
+    void startAll() {
+        context = new AnnotationConfigApplicationContext(ApplicationConfigurationTest.class);
+        sessionFactory = context.getBean("sessionFactory", SessionFactory.class);
+        entityManager = context.getBean("entityManager", EntityManager.class);
     }
 
     @Test
-    void findAllAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
-        session.beginTransaction();
+    void findAllTeacherRepositoryTest() {
+        entityManager.getTransaction().begin();
+        UtilDelete.deleteData(sessionFactory);
+        UtilSave.importData(sessionFactory);
 
-        teacherRepository = new TeacherRepository(session);
+        teacherRepository = new TeacherRepository(entityManager);
 
         var actualList = teacherRepository.findAll();
 
-        assertThat(actualList).hasSize(3);
-        var expectedEntity1 = session.get(Teacher.class, 1);
-        var expectedEntity2 = session.get(Teacher.class, 2);
-        var expectedEntity3 = session.get(Teacher.class, 3);
-        assertThat(actualList).contains(expectedEntity1, expectedEntity2, expectedEntity3);
+        assertThat(actualList).hasSize(2);
+        var expectedEntity1 = entityManager.find(Teacher.class, UtilSave.idTeacher());
+        var expectedEntity2 = entityManager.find(Teacher.class, UtilSave.idTeacher());
+        assertThat(actualList).contains(expectedEntity1, expectedEntity2);
 
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
     }
 
     @Test
-    void findByIdAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
-        session.beginTransaction();
+    void findByIdTeacherRepositoryTest() {
+        entityManager.getTransaction().begin();
+        UtilDelete.deleteData(sessionFactory);
+        UtilSave.importData(sessionFactory);
 
-        teacherRepository = new TeacherRepository(session);
+        teacherRepository = new TeacherRepository(entityManager);
 
         var actualTeacher = teacherRepository.findById(UtilSave.idTeacher()).orElse(null);
 
         assertThat(actualTeacher).isNotNull();
 
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
     }
 
     @Test
-    void deleteAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
-        session.beginTransaction();
+    void deleteTeacherRepositoryTest() {
+        entityManager.getTransaction().begin();
+        UtilDelete.deleteData(sessionFactory);
+        UtilSave.importData(sessionFactory);
 
-        teacherRepository = new TeacherRepository(session);
-        var aboutCourse = session.get(Teacher.class, UtilSave.idTeacher());
+        teacherRepository = new TeacherRepository(entityManager);
+        var teacher = entityManager.find(Teacher.class, UtilSave.idTeacher());
 
-        teacherRepository.delete(aboutCourse);
+        teacherRepository.delete(teacher);
 
         var list = teacherRepository.findAll();
-        assertThat(list).hasSize(2);
+        assertThat(list).hasSize(1);
 
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
     }
 
     @Test
-    void saveAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
-        session.beginTransaction();
+    void saveTeacherRepositoryTest() {
+        entityManager.getTransaction().begin();
+        UtilDelete.deleteData(sessionFactory);
+        UtilSave.importData(sessionFactory);
 
-        teacherRepository = new TeacherRepository(session);
+        teacherRepository = new TeacherRepository(entityManager);
         var aboutCourse = UtilSave.buildTeacher();
 
         var actualEntity = teacherRepository.save(aboutCourse);
-        session.evict(actualEntity);
+        entityManager.detach(actualEntity);
 
         var list = teacherRepository.findAll();
-        var expectedEntity = session.get(Teacher.class, UtilSave.idTeacher());
-        assertThat(list).hasSize(4);
+        var expectedEntity = entityManager.find(Teacher.class, UtilSave.idTeacher());
+        assertThat(list).hasSize(3);
         assertThat(list).contains(expectedEntity);
 
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
     }
 
     @Test
-    void updateAboutCourseRepositoryTest() {
-        @Cleanup var session = sessionFactory.openSession();
-        session.beginTransaction();
+    void updateTeacherRepositoryTest() {
+        entityManager.getTransaction().begin();
+        UtilDelete.deleteData(sessionFactory);
+        UtilSave.importData(sessionFactory);
 
-        teacherRepository = new TeacherRepository(session);
+        teacherRepository = new TeacherRepository(entityManager);
         var expectedTeacher = Teacher.builder()
                 .id(UtilSave.idTeacher())
                 .personalInfo(PersonalInfo.builder()
@@ -109,9 +116,9 @@ public class RepositoryTeacherTest {
 
         teacherRepository.update(expectedTeacher);
 
-        var actualTeacher = session.get(Teacher.class, UtilSave.idTeacher());
+        var actualTeacher = entityManager.find(Teacher.class, UtilSave.idTeacher());
         assertThat(actualTeacher.toString()).isEqualTo(expectedTeacher.toString());
 
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
     }
 }

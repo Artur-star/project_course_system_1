@@ -3,6 +3,7 @@ package com.artur.requestTest;
 import com.artur.config.ApplicationConfigurationTest;
 import com.artur.entity.Student;
 import com.artur.request.RequestCriteriaAPI;
+import com.artur.util.HibernateTestUtil;
 import com.artur.util.UtilDelete;
 import com.artur.util.UtilSave;
 import lombok.Cleanup;
@@ -15,42 +16,24 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
-@TestInstance(PER_CLASS)
 public class RequestCriteriaApiTest {
 
-    SessionFactory sessionFactory;
+    SessionFactory sessionFactory = HibernateTestUtil.buildSessionFactory();
     RequestCriteriaAPI criteriaAPI = RequestCriteriaAPI.getInstance();
-    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfigurationTest.class);
-
-    Session session;
-
-
-    @BeforeAll
-    void start() {
-        sessionFactory = context.getBean(SessionFactory.class);
-
-    }
 
     @BeforeEach
     void startEach() {
-
         UtilSave.importData(sessionFactory);
     }
 
     @AfterEach
     void endEach() {
         UtilDelete.deleteData(sessionFactory);
-        session.close();
-    }
-
-    @AfterAll
-    void endAll() {
-        sessionFactory.close();
     }
 
     @Test
     void findAll() {
-        session = context.getBean(Session.class);
+        @Cleanup var session = sessionFactory.openSession();
         session.beginTransaction();
 
         var students = criteriaAPI.findAll(session);
@@ -64,6 +47,7 @@ public class RequestCriteriaApiTest {
 
     @Test
     void findMaxCountStudentByFirstnameAndLastnameTeacher() {
+        @Cleanup var session = sessionFactory.openSession();
         session.beginTransaction();
 
         var tuples = criteriaAPI.findMaxCountStudentByFirstnameAndLastnameTeacher(session, "Gleb", "Matveenka");

@@ -4,11 +4,13 @@ import com.artur.config.ApplicationConfigurationTest;
 import com.artur.dto.TeacherFilter;
 import com.artur.entity.Student;
 import com.artur.request.RequestQueryDsl;
+import com.artur.util.HibernateTestUtil;
 import com.artur.util.UtilDelete;
 import com.artur.util.UtilSave;
 import lombok.Cleanup;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.*;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
 
@@ -19,7 +21,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.*;
 @TestInstance(PER_CLASS)
 public class RequestQueryDslTest {
 
-    SessionFactory sessionFactory = new ApplicationConfigurationTest().buildSessionFactory();
+    SessionFactory sessionFactory = HibernateTestUtil.buildSessionFactory();
     RequestQueryDsl queryDsl = RequestQueryDsl.getInstance();
 
     @BeforeEach

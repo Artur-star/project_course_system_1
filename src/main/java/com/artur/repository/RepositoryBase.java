@@ -3,8 +3,8 @@ package com.artur.repository;
 import com.artur.entity.BaseEntity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Session;
 
+import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -15,34 +15,34 @@ public class RepositoryBase<K extends Serializable, E extends BaseEntity<K>> imp
     private final Class<E> clazz;
 
     @Getter
-    private final Session session;
+    protected final EntityManager entityManager;
 
     @Override
     public void delete(E entity) {
-        session.delete(entity);
+        entityManager.remove(entity);
     }
 
     @Override
     public E save(E entity) {
-        session.save(entity);
+        entityManager.persist(entity);
         return entity;
     }
 
     @Override
     public void update(E entity) {
-        session.merge(entity);
+        entityManager.merge(entity);
     }
 
     @Override
     public Optional<E> findById(K id) {
-        return Optional.ofNullable(session.find(clazz, id));
+        return Optional.ofNullable(entityManager.find(clazz, id));
     }
 
     @Override
     public List<E> findAll() {
-        var criteria = session.getCriteriaBuilder().createQuery(clazz);
+        var criteria = entityManager.getCriteriaBuilder().createQuery(clazz);
         criteria.from(clazz);
-        return session.createQuery(criteria)
+        return entityManager.createQuery(criteria)
                 .getResultList();
     }
 }

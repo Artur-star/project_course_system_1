@@ -2,7 +2,6 @@ package com.artur;
 import com.artur.config.ApplicationConfiguration;
 import com.artur.entity.AboutCourse;
 import com.artur.repository.AboutCourseRepository;
-import com.artur.util.HibernateUtil;
 import com.querydsl.core.Tuple;
 import org.hibernate.Session;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

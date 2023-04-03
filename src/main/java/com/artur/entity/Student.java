@@ -21,6 +21,6 @@ public class Student implements BaseEntity<Long> {
     private PersonalInfo personalInfo;
 
     @Builder.Default
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", cascade = CascadeType.REMOVE)
     private List<Rating> ratings = new ArrayList<>();
 }

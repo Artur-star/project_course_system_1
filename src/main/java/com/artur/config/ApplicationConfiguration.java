@@ -2,7 +2,6 @@ package com.artur.config;
 
 import com.artur.entity.*;
 import com.artur.repository.*;
-import com.artur.util.HibernateUtil;
 import lombok.Cleanup;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.*;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -20,7 +20,7 @@ import java.util.Properties;
 
 @Configuration
 @PropertySource("classpath:application.properties")
-@ComponentScan(basePackages = "com.artur")
+@ComponentScan(basePackages = "com.artur.repository")
 public class ApplicationConfiguration {
 
     @Value("${connection.url}")
@@ -44,14 +44,16 @@ public class ApplicationConfiguration {
     @Value("${format_sql}")
     private String formatSql;
 
+    @Value("${hibernate.current_session_context_class}")
+    private String thread;
+
     @Bean
-    public Session session() {
-        return (Session) Proxy.newProxyInstance(Session.class.getClassLoader(), new Class[]{Session.class},
-                (proxy, method, args) -> method.invoke(buildSessionFactory().openSession(), args));
+    public EntityManager entityManager() {
+        return (EntityManager) Proxy.newProxyInstance(EntityManager.class.getClassLoader(), new Class[]{EntityManager.class},
+                (proxy, method, args) -> method.invoke(buildSessionFactory().getCurrentSession(), args));
     }
 
     @Bean
-    @Scope(scopeName = BeanDefinition.SCOPE_SINGLETON)
     public SessionFactory buildSessionFactory() {
         var configuration = new org.hibernate.cfg.Configuration();
         configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy());
@@ -62,6 +64,7 @@ public class ApplicationConfiguration {
         configuration.setProperty(Environment.DIALECT, hibernateDialect);
         configuration.setProperty(Environment.SHOW_SQL, showSql);
         configuration.setProperty(Environment.FORMAT_SQL, formatSql);
+        configuration.setProperty(Environment.CURRENT_SESSION_CONTEXT_CLASS, thread);
         configuration.addAnnotatedClass(Teacher.class);
         configuration.addAnnotatedClass(Student.class);
         configuration.addAnnotatedClass(Course.class);

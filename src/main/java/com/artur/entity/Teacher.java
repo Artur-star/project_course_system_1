@@ -22,7 +22,7 @@ public class Teacher implements BaseEntity<Integer>{
     private String profession;
 
     @Builder.Default
-    @OneToMany(mappedBy = "teacher")
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.REMOVE)
     private List<AboutCourse> aboutCourses = new ArrayList<>();
 
     public void setAboutCourse(AboutCourse aboutCourse) {

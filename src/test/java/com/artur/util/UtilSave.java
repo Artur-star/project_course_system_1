@@ -17,10 +17,15 @@ import static java.time.LocalDate.*;
 @UtilityClass
 @Data
 public class UtilSave {
+    @Getter
     private final List<Teacher> teachers = new ArrayList<>();
+    @Getter
     private final List<AboutCourse> aboutCourses = new ArrayList<>();
+    @Getter
     private final List<Course> courses = new ArrayList<>();
+    @Getter
     private final List<Student> students = new ArrayList<>();
+    @Getter
     private final List<Rating> ratings = new ArrayList<>();
 
     public void importData(SessionFactory sessionFactory) {
@@ -218,9 +223,5 @@ public class UtilSave {
                         .build())
                 .profession("Веб-дизайнер")
                 .build();
-    }
-
-    public List<AboutCourse> getAboutCourses() {
-        return aboutCourses;
     }
 }

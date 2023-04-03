@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "ratings")
 @Builder
 @Entity
 public class Course implements BaseEntity<Long>{
@@ -26,6 +25,6 @@ public class Course implements BaseEntity<Long>{
     private LocalDate finish;
 
     @Builder.Default
-    @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE)
     private List<Rating> ratings = new ArrayList<>();
 }

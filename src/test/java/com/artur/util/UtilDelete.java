@@ -23,5 +23,11 @@ public class UtilDelete {
                 .executeUpdate();
 
         session.getTransaction().commit();
+
+        UtilSave.getAboutCourses().clear();
+        UtilSave.getTeachers().clear();
+        UtilSave.getStudents().clear();
+        UtilSave.getRatings().clear();
+        UtilSave.getCourses().clear();
     }
 }

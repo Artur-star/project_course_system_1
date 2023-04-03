@@ -5,9 +5,11 @@ import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+
 @Repository
 public class RatingRepository extends RepositoryBase<Long, Rating>{
-    public RatingRepository(Session session) {
-        super(Rating.class, session);
+    public RatingRepository(EntityManager entityManager) {
+        super(Rating.class, entityManager);
     }
 }
