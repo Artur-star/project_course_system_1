@@ -1,11 +1,9 @@
-package com.artur.repository;
+package com.artur.database.repository;
 
 import com.artur.config.ApplicationConfigurationTest;
-import com.artur.entity.Course;
-import com.artur.util.HibernateTestUtil;
+import com.artur.database.entity.Course;
 import com.artur.util.UtilDelete;
 import com.artur.util.UtilSave;
-import lombok.Cleanup;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -33,8 +31,8 @@ public class RepositoryCourseTest {
     @Test
     void findAllCourseRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         courseRepository = new CourseRepository(entityManager);
 
@@ -53,8 +51,8 @@ public class RepositoryCourseTest {
     @Test
     void findByIdCourseRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         courseRepository = new CourseRepository(entityManager);
 
@@ -68,8 +66,8 @@ public class RepositoryCourseTest {
     @Test
     void deleteCourseRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         courseRepository = new CourseRepository(entityManager);
         var course = entityManager.find(Course.class, UtilSave.idCourse());
@@ -85,8 +83,8 @@ public class RepositoryCourseTest {
     @Test
     void saveCourseRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         courseRepository = new CourseRepository(entityManager);
         var course = UtilSave.buildCourse();
@@ -105,8 +103,8 @@ public class RepositoryCourseTest {
     @Test
     void updateCourseRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         courseRepository = new CourseRepository(entityManager);
         var expectedCourse = Course.builder()

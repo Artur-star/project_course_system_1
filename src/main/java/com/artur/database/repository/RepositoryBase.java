@@ -1,6 +1,6 @@
-package com.artur.repository;
+package com.artur.database.repository;
 
-import com.artur.entity.BaseEntity;
+import com.artur.database.entity.BaseEntity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

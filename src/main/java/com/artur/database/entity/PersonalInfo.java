@@ -1,4 +1,4 @@
-package com.artur.entity;
+package com.artur.database.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.io.Serial;
-import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data

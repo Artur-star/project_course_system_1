@@ -1,13 +1,13 @@
-package com.artur.repository;
+package com.artur.database.repository;
 
-import com.artur.entity.Teacher;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.artur.database.entity.Teacher;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
 @Repository
+@Transactional
 public class TeacherRepository extends RepositoryBase<Integer, Teacher>{
     public TeacherRepository(EntityManager entityManager) {
         super(Teacher.class, entityManager);

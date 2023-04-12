@@ -1,20 +1,23 @@
 package com.artur.request;
 
 import com.artur.dto.TeacherFilter;
-import com.artur.entity.*;
+import com.artur.database.entity.*;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hibernate.Session;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.artur.entity.QAboutCourse.aboutCourse;
-import static com.artur.entity.QCourse.course;
-import static com.artur.entity.QRating.*;
-import static com.artur.entity.QStudent.student;
-import static com.artur.entity.QTeacher.teacher;
+import static com.artur.database.entity.QAboutCourse.aboutCourse;
+import static com.artur.database.entity.QCourse.course;
+import static com.artur.database.entity.QRating.*;
+import static com.artur.database.entity.QStudent.student;
+import static com.artur.database.entity.QTeacher.teacher;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestQueryDsl {
@@ -24,13 +27,13 @@ public class RequestQueryDsl {
         return INSTANCE;
     }
 
-    public List<Student> findAllStudentByCourseName(Session session, AboutCourse filter) {
+    public List<Student> findAllStudentByCourseName(EntityManager entityManager, AboutCourse filter) {
         var predicate = QPredicate.builder()
                 .add(filter.getName(), s -> aboutCourse.name.eq(filter.getName()))
                 .buildAnd();
 
 
-        return new JPAQuery<Student>(session)
+        return new JPAQuery<Student>(entityManager)
                 .select(student)
                 .from(student)
                 .join(student.ratings, rating1)
@@ -40,14 +43,14 @@ public class RequestQueryDsl {
                 .fetch();
     }
 
-    public Long findCountStudentByTeacherNameAndSurname(Session session, TeacherFilter teacherFilter) {
+    public Long findCountStudentByTeacherNameAndSurname(EntityManager entityManager, TeacherFilter teacherFilter) {
 
         var predicate = QPredicate.builder()
                 .add(teacherFilter.getFirstname(), it -> teacher.personalInfo.lastname.eq(teacherFilter.getLastname()))
                 .add(teacherFilter.getLastname(), it -> teacher.personalInfo.firstname.eq(teacherFilter.getFirstname()))
                 .buildAnd();
 
-        return new JPAQuery<Student>(session)
+        return new JPAQuery<Student>(entityManager)
                 .select(student.count())
                 .from(student)
                 .join(student.ratings, rating1)
@@ -59,9 +62,9 @@ public class RequestQueryDsl {
     }
 
     //возвращает имя курса, отсортированный средний возраст студентов на этом курсе за все время
-    public List<Tuple> findCourseNamesWithOrderedByAvgAgeStudents(Session session) {
+    public List<Tuple> findCourseNamesWithOrderedByAvgAgeStudents(EntityManager entityManager) {
 
-        return new JPAQuery<Tuple>(session)
+        return new JPAQuery<Tuple>(entityManager)
                 .select(aboutCourse.name, student.personalInfo.birthdate.year().avg())
                 .from(aboutCourse)
                 .join(aboutCourse.courses, course)

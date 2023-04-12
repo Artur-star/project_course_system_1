@@ -1,12 +1,10 @@
-package com.artur.repository;
+package com.artur.database.repository;
 
 import com.artur.config.ApplicationConfigurationTest;
-import com.artur.entity.PersonalInfo;
-import com.artur.entity.Student;
-import com.artur.util.HibernateTestUtil;
+import com.artur.database.entity.PersonalInfo;
+import com.artur.database.entity.Student;
 import com.artur.util.UtilDelete;
 import com.artur.util.UtilSave;
-import lombok.Cleanup;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -33,8 +31,8 @@ public class RepositoryStudentTest {
     @Test
     void findAllStudentRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         studentRepository = new StudentRepository(entityManager);
 
@@ -52,8 +50,8 @@ public class RepositoryStudentTest {
     @Test
     void findByIdStudentRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         studentRepository = new StudentRepository(entityManager);
 
@@ -67,8 +65,8 @@ public class RepositoryStudentTest {
     @Test
     void deleteStudentRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         studentRepository = new StudentRepository(entityManager);
         var student = entityManager.find(Student.class, UtilSave.idStudent());
@@ -84,8 +82,8 @@ public class RepositoryStudentTest {
     @Test
     void saveStudentRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         studentRepository = new StudentRepository(entityManager);
         var student = UtilSave.buildStudent();
@@ -104,8 +102,8 @@ public class RepositoryStudentTest {
     @Test
     void updateStudentRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         studentRepository = new StudentRepository(entityManager);
         var expectedStudent = Student.builder()

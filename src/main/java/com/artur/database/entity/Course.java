@@ -1,4 +1,4 @@
-package com.artur.entity;
+package com.artur.database.entity;
 
 import lombok.*;
 

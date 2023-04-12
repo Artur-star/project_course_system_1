@@ -1,11 +1,9 @@
-package com.artur.repository;
+package com.artur.database.repository;
 
 import com.artur.config.ApplicationConfigurationTest;
-import com.artur.entity.Rating;
-import com.artur.util.HibernateTestUtil;
+import com.artur.database.entity.Rating;
 import com.artur.util.UtilDelete;
 import com.artur.util.UtilSave;
-import lombok.Cleanup;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -32,8 +30,8 @@ public class RepositoryRatingTest {
     @Test
     void findAllRatingRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         ratingRepository = new RatingRepository(entityManager);
 
@@ -51,8 +49,8 @@ public class RepositoryRatingTest {
     @Test
     void findByIdRatingRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         ratingRepository = new RatingRepository(entityManager);
 
@@ -66,8 +64,8 @@ public class RepositoryRatingTest {
     @Test
     void deleteRatingRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         ratingRepository = new RatingRepository(entityManager);
         var rating = entityManager.find(Rating.class, UtilSave.idRating());
@@ -83,8 +81,8 @@ public class RepositoryRatingTest {
     @Test
     void saveRatingRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         ratingRepository = new RatingRepository(entityManager);
         var rating = UtilSave.buildRating();
@@ -103,8 +101,8 @@ public class RepositoryRatingTest {
     @Test
     void updateRatingRepositoryTest() {
         entityManager.getTransaction().begin();
-        UtilDelete.deleteData(sessionFactory);
-        UtilSave.importData(sessionFactory);
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
 
         ratingRepository = new RatingRepository(entityManager);
         var expectedRating = Rating.builder()

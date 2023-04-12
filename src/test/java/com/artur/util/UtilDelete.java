@@ -4,25 +4,27 @@ import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
 import org.hibernate.SessionFactory;
 
+import javax.persistence.EntityManager;
+
 @UtilityClass
 public class UtilDelete {
 
-    public void deleteData(SessionFactory sessionFactory) {
-        @Cleanup var session = sessionFactory.openSession();
-        session.beginTransaction();
+    public void deleteData(EntityManager entityManager) {
+//        @Cleanup var session = sessionFactory.openSession();
+//        session.beginTransaction();
+        entityManager.getTransaction().begin();
+        entityManager.createQuery("DELETE FROM Rating r")
+                .executeUpdate();
+        entityManager.createQuery("DELETE FROM Student s")
+                .executeUpdate();
+        entityManager.createQuery("DELETE FROM Course c")
+                .executeUpdate();
+        entityManager.createQuery("DELETE FROM AboutCourse a")
+                .executeUpdate();
+        entityManager.createQuery("DELETE FROM Teacher t")
+                .executeUpdate();
 
-        session.createQuery("DELETE FROM Rating r")
-                .executeUpdate();
-        session.createQuery("DELETE FROM Student s")
-                .executeUpdate();
-        session.createQuery("DELETE FROM Course c")
-                .executeUpdate();
-        session.createQuery("DELETE FROM AboutCourse a")
-                .executeUpdate();
-        session.createQuery("DELETE FROM Teacher t")
-                .executeUpdate();
-
-        session.getTransaction().commit();
+        entityManager.getTransaction().commit();
 
         UtilSave.getAboutCourses().clear();
         UtilSave.getTeachers().clear();

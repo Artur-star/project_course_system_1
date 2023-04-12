@@ -1,0 +1,23 @@
+connection:
+  url: jdbc:postgresql://localhost:5432/courses_repository
+  username: postgres
+  password: Art416646271994@
+  driver: PostgresDriver
+  hosts: localhost, 127.0.0.1
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/courses_repository
+    username: postgres
+    password: Art416646271994@
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        hbm2ddl:
+          auto: validate
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        current_session_context_class: thread
+

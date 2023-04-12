@@ -1,18 +1,18 @@
-//package com.artur.entity;
+//package com.artur.database.entity;
 //
 //import com.artur.config.ApplicationConfigurationTest;
 //import com.artur.util.UtilDelete;
 //import com.artur.util.UtilSave;
 //import org.hibernate.SessionFactory;
-//import org.junit.jupiter.api.*;
+//import org.junit.jupiter.api.AfterEach;
+//import org.junit.jupiter.api.BeforeAll;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
 //import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 //
-//import static org.assertj.core.api.Assertions.*;
+//import static org.assertj.core.api.Assertions.assertThat;
 //
-//
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//class CourseSystemTest {
-//
+//public class CourseSystemIT {
 //    SessionFactory sessionFactory;
 //
 //    @BeforeAll
@@ -32,7 +32,7 @@
 //    }
 //
 //    @Test
-//    void testSaveAndGetTeacher() {
+//    void count() {
 //        try (var session = sessionFactory.openSession()) {
 //            session.beginTransaction();
 //            var aboutCourse = UtilSave.buildAboutCourse();
@@ -70,63 +70,63 @@
 //    @Test
 //    void testSaveAndGetRating() {
 //        try (var session = sessionFactory.openSession()) {
-//                session.beginTransaction();
-//                var aboutCourse = UtilSave.buildAboutCourse();
-//                var teacher = UtilSave.buildTeacher();
-//                var course = UtilSave.buildCourse();
-//                var student = UtilSave.buildStudent();
-//                var expectedRating = UtilSave.buildRating();
-//                teacher.setAboutCourse(aboutCourse);
-//                aboutCourse.addAboutCourse(course);
-//                expectedRating.setStudent(student);
-//                expectedRating.setCourse(course);
-//                session.save(teacher);
-//                session.save(aboutCourse);
-//                session.save(student);
-//                session.save(course);
+//            session.beginTransaction();
+//            var aboutCourse = UtilSave.buildAboutCourse();
+//            var teacher = UtilSave.buildTeacher();
+//            var course = UtilSave.buildCourse();
+//            var student = UtilSave.buildStudent();
+//            var expectedRating = UtilSave.buildRating();
+//            teacher.setAboutCourse(aboutCourse);
+//            aboutCourse.addAboutCourse(course);
+//            expectedRating.setStudent(student);
+//            expectedRating.setCourse(course);
+//            session.save(teacher);
+//            session.save(aboutCourse);
+//            session.save(student);
+//            session.save(course);
 //
-//                var idRating = session.save(expectedRating);
-//                session.evict(expectedRating);
-//                var actualRating = session.get(Rating.class, idRating);
+//            var idRating = session.save(expectedRating);
+//            session.evict(expectedRating);
+//            var actualRating = session.get(Rating.class, idRating);
 //
-//                assertThat(actualRating).isEqualTo(expectedRating);
-//                session.getTransaction().commit();
+//            assertThat(actualRating).isEqualTo(expectedRating);
+//            session.getTransaction().commit();
 //        }
 //    }
 //
 //    @Test
 //    void testSaveAndGetStudent() {
 //        try (var session = sessionFactory.openSession()) {
-//                session.beginTransaction();
-//                var expectedStudent = UtilSave.buildStudent();
+//            session.beginTransaction();
+//            var expectedStudent = UtilSave.buildStudent();
 //
-//                var studentId = session.save(expectedStudent);
-//                session.evict(expectedStudent);
-//                var actualStudent = session.get(Student.class, studentId);
+//            var studentId = session.save(expectedStudent);
+//            session.evict(expectedStudent);
+//            var actualStudent = session.get(Student.class, studentId);
 //
-//                assertThat(actualStudent.getId()).isEqualTo(expectedStudent.getId());
-//                session.getTransaction().commit();
+//            assertThat(actualStudent.getId()).isEqualTo(expectedStudent.getId());
+//            session.getTransaction().commit();
 //        }
 //    }
 //
 //    @Test
 //    void testSaveAndGetCourse() {
 //        try (var session = sessionFactory.openSession()) {
-//                session.beginTransaction();
-//                var expectedCourse = UtilSave.buildCourse();
-//                var aboutCourse = UtilSave.buildAboutCourse();
-//                var teacher = UtilSave.buildTeacher();
-//                teacher.setAboutCourse(aboutCourse);
-//                aboutCourse.addAboutCourse(expectedCourse);
-//                session.save(teacher);
-//                session.save(aboutCourse);
+//            session.beginTransaction();
+//            var expectedCourse = UtilSave.buildCourse();
+//            var aboutCourse = UtilSave.buildAboutCourse();
+//            var teacher = UtilSave.buildTeacher();
+//            teacher.setAboutCourse(aboutCourse);
+//            aboutCourse.addAboutCourse(expectedCourse);
+//            session.save(teacher);
+//            session.save(aboutCourse);
 //
-//                var courseId = session.save(expectedCourse);
-//                session.evict(expectedCourse);
-//                var actualCourse = session.get(Course.class, courseId);
+//            var courseId = session.save(expectedCourse);
+//            session.evict(expectedCourse);
+//            var actualCourse = session.get(Course.class, courseId);
 //
-//                assertThat(actualCourse.getId()).isEqualTo(expectedCourse.getId());
-//                session.getTransaction().commit();
+//            assertThat(actualCourse.getId()).isEqualTo(expectedCourse.getId());
+//            session.getTransaction().commit();
 //        }
 //    }
 //}

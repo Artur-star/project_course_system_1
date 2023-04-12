@@ -1,6 +1,6 @@
 package com.artur.request;
 
-import com.artur.entity.*;
+import com.artur.database.entity.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hibernate.Session;

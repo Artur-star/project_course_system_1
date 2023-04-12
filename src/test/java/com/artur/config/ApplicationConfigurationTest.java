@@ -1,12 +1,10 @@
 package com.artur.config;
 
-import com.artur.entity.*;
-import org.hibernate.Session;
+import com.artur.database.entity.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
 import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.*;
 
 import javax.persistence.EntityManager;

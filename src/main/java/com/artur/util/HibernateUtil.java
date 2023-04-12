@@ -1,6 +1,6 @@
 package com.artur.util;
 
-import com.artur.entity.*;
+import com.artur.database.entity.*;
 import lombok.experimental.UtilityClass;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
