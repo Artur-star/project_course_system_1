@@ -1,90 +1,60 @@
 package com.artur.database.repository;
 
-import com.artur.config.ApplicationConfigurationTest;
+import com.artur.annotation.IT;
 import com.artur.database.entity.Rating;
 import com.artur.util.UtilDelete;
 import com.artur.util.UtilSave;
-import org.hibernate.SessionFactory;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.*;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@IT
+@RequiredArgsConstructor
 public class RepositoryRatingTest {
-    AnnotationConfigApplicationContext context;
-    SessionFactory sessionFactory;
-    EntityManager entityManager;
-    RatingRepository ratingRepository;
+    private final EntityManager entityManager;
+    private final RatingRepository ratingRepository;
 
-
-    @BeforeAll
-    void startAll() {
-        context = new AnnotationConfigApplicationContext(ApplicationConfigurationTest.class);
-        sessionFactory = context.getBean("sessionFactory", SessionFactory.class);
-        entityManager = context.getBean("entityManager", EntityManager.class);
+    @BeforeEach
+    void removeAndSaveData() {
+        UtilDelete.deleteData(entityManager);
+        UtilSave.importData(entityManager);
     }
 
     @Test
     void findAllRatingRepositoryTest() {
-        entityManager.getTransaction().begin();
-        UtilDelete.deleteData(entityManager);
-        UtilSave.importData(entityManager);
-
-        ratingRepository = new RatingRepository(entityManager);
-
         var actualList = ratingRepository.findAll();
 
         assertThat(actualList).hasSize(10);
         var expectedEntity1 = entityManager.find(Rating.class, 1L);
         var expectedEntity2 = entityManager.find(Rating.class, 2L);
         var expectedEntity3 = entityManager.find(Rating.class, 3L);
-        assertThat(actualList).contains(expectedEntity1, expectedEntity2, expectedEntity3);
 
-        entityManager.getTransaction().commit();
+        assertThat(actualList).contains(expectedEntity1, expectedEntity2, expectedEntity3);
     }
 
     @Test
     void findByIdRatingRepositoryTest() {
-        entityManager.getTransaction().begin();
-        UtilDelete.deleteData(entityManager);
-        UtilSave.importData(entityManager);
-
-        ratingRepository = new RatingRepository(entityManager);
-
         var actualRating = ratingRepository.findById(UtilSave.idRating()).orElse(null);
 
         assertThat(actualRating).isNotNull();
-
-        entityManager.getTransaction().commit();
     }
 
     @Test
     void deleteRatingRepositoryTest() {
-        entityManager.getTransaction().begin();
-        UtilDelete.deleteData(entityManager);
-        UtilSave.importData(entityManager);
-
-        ratingRepository = new RatingRepository(entityManager);
         var rating = entityManager.find(Rating.class, UtilSave.idRating());
 
         ratingRepository.delete(rating);
 
-        var list = ratingRepository.findAll();
-        assertThat(list).hasSize(9);
-
-        entityManager.getTransaction().commit();
+        var actualResult = ratingRepository.findById(rating.getId()).orElse(null);
+        assertThat(actualResult).isNull();
     }
 
     @Test
     void saveRatingRepositoryTest() {
-        entityManager.getTransaction().begin();
-        UtilDelete.deleteData(entityManager);
-        UtilSave.importData(entityManager);
-
-        ratingRepository = new RatingRepository(entityManager);
         var rating = UtilSave.buildRating();
 
         var actualEntity = ratingRepository.save(rating);
@@ -94,17 +64,10 @@ public class RepositoryRatingTest {
         var expectedEntity = entityManager.find(Rating.class, UtilSave.idRating());
         assertThat(list).hasSize(11);
         assertThat(list).contains(expectedEntity);
-
-        entityManager.getTransaction().commit();
     }
 
     @Test
     void updateRatingRepositoryTest() {
-        entityManager.getTransaction().begin();
-        UtilDelete.deleteData(entityManager);
-        UtilSave.importData(entityManager);
-
-        ratingRepository = new RatingRepository(entityManager);
         var expectedRating = Rating.builder()
                 .id(UtilSave.idRating())
                 .rating((short) 4)
@@ -114,7 +77,5 @@ public class RepositoryRatingTest {
 
         var actualRating = entityManager.find(Rating.class, UtilSave.idRating());
         assertThat(actualRating.toString()).isEqualTo(expectedRating.toString());
-
-        entityManager.getTransaction().commit();
     }
 }

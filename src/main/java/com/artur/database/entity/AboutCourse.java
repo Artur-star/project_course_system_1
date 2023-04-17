@@ -1,8 +1,18 @@
+
 package com.artur.database.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.GenerationType;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +22,8 @@ import java.util.List;
 @Builder
 @Entity
 @Table
-@ToString(exclude = "courses")
+@EqualsAndHashCode(of = {"name", "costInRubles", "maxStudentsNumber"})
+@ToString(exclude = {"teacher"})
 public class AboutCourse implements BaseEntity<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +37,7 @@ public class AboutCourse implements BaseEntity<Integer> {
     private Integer maxStudentsNumber;
 
     @Builder.Default
-    @OneToMany(mappedBy = "aboutCourse", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "aboutCourse")
     private List<Course> courses = new ArrayList<>();
 
     public void addAboutCourse(Course course) {

@@ -1,12 +1,14 @@
 package com.artur.util;
 
-import com.artur.database.entity.*;
-import lombok.Cleanup;
+import com.artur.database.entity.Teacher;
+import com.artur.database.entity.AboutCourse;
+import com.artur.database.entity.Course;
+import com.artur.database.entity.Student;
+import com.artur.database.entity.Rating;
+import com.artur.database.entity.PersonalInfo;
 import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
@@ -30,7 +32,6 @@ public class UtilSave {
     private final List<Rating> ratings = new ArrayList<>();
 
     public void importData(EntityManager entityManager) {
-        entityManager.getTransaction().begin();
 
         var webGlebMatveenka = saveTeacher(entityManager, "Gleb", "Matveenka", "asd2@fer.com", "Веб-дизайнер");
         var qaVladVilnus = saveTeacher(entityManager, "Vlad", "Vilnus", "dasdqw@fer.com", "QA-инженер");
@@ -94,8 +95,6 @@ public class UtilSave {
         ratings.add(rating7);
         ratings.add(rating8);
         ratings.add(rating9);
-
-//        session.getTransaction().commit();
     }
 
     public Integer idTeacher() {

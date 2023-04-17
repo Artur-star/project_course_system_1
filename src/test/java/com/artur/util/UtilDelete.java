@@ -10,9 +10,6 @@ import javax.persistence.EntityManager;
 public class UtilDelete {
 
     public void deleteData(EntityManager entityManager) {
-//        @Cleanup var session = sessionFactory.openSession();
-//        session.beginTransaction();
-        entityManager.getTransaction().begin();
         entityManager.createQuery("DELETE FROM Rating r")
                 .executeUpdate();
         entityManager.createQuery("DELETE FROM Student s")
@@ -23,8 +20,6 @@ public class UtilDelete {
                 .executeUpdate();
         entityManager.createQuery("DELETE FROM Teacher t")
                 .executeUpdate();
-
-        entityManager.getTransaction().commit();
 
         UtilSave.getAboutCourses().clear();
         UtilSave.getTeachers().clear();

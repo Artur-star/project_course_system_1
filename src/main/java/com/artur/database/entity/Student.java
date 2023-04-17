@@ -2,7 +2,14 @@ package com.artur.database.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Embedded;
+import javax.persistence.GenerationType;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = "ratings")
+@EqualsAndHashCode(of = "personalInfo")
+//@ToString(exclude = "ratings")
 @Entity
 public class Student implements BaseEntity<Long> {
     @Id
@@ -21,6 +29,6 @@ public class Student implements BaseEntity<Long> {
     private PersonalInfo personalInfo;
 
     @Builder.Default
-    @OneToMany(mappedBy = "student", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "student")
     private List<Rating> ratings = new ArrayList<>();
 }
