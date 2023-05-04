@@ -1,15 +1,7 @@
 package com.artur.database.repository;
 
 import com.artur.database.entity.Rating;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.persistence.EntityManager;
-
-@Repository
-@Transactional
-public class RatingRepository extends RepositoryBase<Long, Rating>{
-    public RatingRepository(EntityManager entityManager) {
-        super(Rating.class, entityManager);
-    }
+public interface RatingRepository extends JpaRepository<Rating, Long> {
 }

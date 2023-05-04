@@ -1,15 +1,7 @@
 package com.artur.database.repository;
 
 import com.artur.database.entity.Teacher;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.persistence.EntityManager;
-
-@Repository
-@Transactional
-public class TeacherRepository extends RepositoryBase<Integer, Teacher>{
-    public TeacherRepository(EntityManager entityManager) {
-        super(Teacher.class, entityManager);
-    }
+public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
 }
